@@ -1,0 +1,43 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4 rounded position-relative" style="max-width: 600px; width: 100%;">
+        
+        <!-- Close Button (X) -->
+        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Close" (click)="goToHome()"></button>
+
+        <h2 class="text-center mb-4 text-primary">Job Application</h2>
+
+        <!-- Success Message -->
+        <div *ngIf="successMessage" class="alert alert-success text-center">
+            {{ successMessage }}
+        </div>
+
+        <form #jobForm="ngForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+                <label for="name" class="form-label fw-semibold">Full Name</label>
+                <input type="text" class="form-control" id="name" name="name" [(ngModel)]="formData.name" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label fw-semibold">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" [(ngModel)]="formData.email" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="phone" class="form-label fw-semibold">Phone Number</label>
+                <input type="tel" class="form-control" id="phone" name="phone" [(ngModel)]="formData.phone" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="position" class="form-label fw-semibold">Position Applied For</label>
+                <select class="form-select" id="position" name="position" [(ngModel)]="formData.position" required>
+                    <option selected disabled>Choose...</option>
+                    <option value="Mechanic">Mechanic</option>
+                    <option value="Technician">Technician</option>
+                    <option value="Supervisor">Supervisor</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold">Submit Application</button>
+        </form>
+    </div>
+</div>
