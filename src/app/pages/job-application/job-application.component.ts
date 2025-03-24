@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import emailjs from '@emailjs/browser';
 
 @Component({
   selector: 'app-job-application',
@@ -11,9 +12,9 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule],
 })
 export class JobApplicationComponent {
-  formData = { name: '', email: '', phone: '', position: '' }; // ✅ Store form values
+  formData = { name: '', email: '', phone: '', position: '' }; // Store form values
   successMessage = '';
-  isSubmitting = false; // ✅ Prevents multiple submissions
+  isSubmitting = false; // Prevents multiple submissions
 
   constructor(private router: Router) {}
 
@@ -22,40 +23,30 @@ export class JobApplicationComponent {
   }
 
   onSubmit() {
-    if (this.isSubmitting) return; // ✅ Prevents duplicate submissions
+    if (this.isSubmitting) return; // Prevents duplicate submissions
     this.isSubmitting = true;
 
-    const data = new FormData();
-    data.append('name', this.formData.name);
-    data.append('email', this.formData.email);
-    data.append('phone', this.formData.phone);
-    data.append('position', this.formData.position);
+    const templateParams = {
+      name: this.formData.name,
+      email: this.formData.email,
+      phone: this.formData.phone,
+      position: this.formData.position,
+    };
 
-    // Hidden FormSubmit fields
-    data.append('_next', 'https://libratruckrepair.com/');
-    data.append('_captcha', 'false');
-
-    fetch('https://api.formsubmit.co/ajax/wadhah@libratruckrepair.com', {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: data
-    })
-    .then(response => response.json())
-    .then(responseData => {
-      if (responseData.success) {
+    emailjs
+      .send('service_p1lgdik', 'template_txoi1ff', templateParams, '1KbO9u9XNM64K-8BJ')
+      .then(response => {
+        console.log('✅ SUCCESS!', response.status, response.text);
         this.successMessage = '✅ Application submitted successfully!';
-        this.formData = { name: '', email: '', phone: '', position: '' }; // ✅ Clear form fields
+        this.formData = { name: '', email: '', phone: '', position: '' }; // Clear form fields
         setTimeout(() => this.router.navigate(['/']), 2000);
-      } else {
-        alert('⚠️ Form submission failed: ' + responseData.message);
-      }
-    })
-    .catch(error => {
-      console.error('❌ Error:', error);
-      alert('⚠️ There was a problem submitting the form. Please try again later.');
-    })
-    .finally(() => {
-      this.isSubmitting = false; // ✅ Re-enable button after submission
-    });
+      })
+      .catch(error => {
+        console.error('❌ Failed...', error);
+        alert('⚠️ There was a problem submitting the form. Please try again.');
+      })
+      .finally(() => {
+        this.isSubmitting = false; // Re-enable button after submission
+      });
   }
 }
